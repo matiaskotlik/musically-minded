@@ -22,4 +22,5 @@ ignoredBuiltDependencies:
 nodeLinker: hoisted
 
 onlyBuiltDependencies:
+  - core-js-pure
   - supabase
