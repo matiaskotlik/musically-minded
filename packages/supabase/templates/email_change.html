@@ -1,0 +1,9 @@
+<h2>Confirm your new email address</h2>
+<p>Click below to confirm your email change:</p>
+<p>
+  <a
+    href="{{ .SiteURL }}/auth/verify?token_hash={{ .TokenHash }}&type=email_change&next={{ .RedirectTo }}"
+    >Confirm Email Change</a
+  >
+</p>
+<p>If you didn’t request this change, you can ignore this email.</p>

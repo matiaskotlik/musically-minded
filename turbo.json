@@ -1,0 +1,63 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "topo": {
+      "dependsOn": ["^topo"]
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".cache/tsbuildinfo.json", "dist/**"]
+    },
+    "dev": {
+      "dependsOn": ["^dev"],
+      "cache": false,
+      "persistent": false
+    },
+    "format:check": {
+      "outputs": [".cache/.prettiercache"]
+    },
+    "format": {
+      "outputs": [".cache/.prettiercache"],
+      "outputLogs": "new-only"
+    },
+    "lint:check": {
+      "dependsOn": ["topo"],
+      "outputs": [".cache/.eslintcache"]
+    },
+    "lint": {
+      "dependsOn": ["topo"],
+      "outputs": [".cache/.eslintcache"]
+    },
+    "//#format:root": {
+      "outputs": [".cache/.prettiercache"],
+      "outputLogs": "new-only"
+    },
+    "//#format:root:check": {
+      "outputs": [".cache/.prettiercache"],
+      "outputLogs": "new-only"
+    },
+    "build:check": {
+      "dependsOn": ["topo"],
+      "outputs": [".cache/tsbuildinfo.json"]
+    },
+    "clean": {
+      "cache": false
+    },
+    "//#clean:root": {
+      "cache": false
+    }
+  },
+  "globalEnv": ["PORT"],
+  "globalDependencies": [".env*"],
+  "globalPassThroughEnv": [
+    "NODE_ENV",
+    "CI",
+    "VERCEL",
+    "VERCEL_ENV",
+    "VERCEL_URL",
+    "npm_lifecycle_event",
+    "EXPO_PUBLIC_*",
+    "EXPO_TOKEN"
+  ]
+}

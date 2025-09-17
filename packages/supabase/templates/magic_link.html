@@ -1,0 +1,12 @@
+<h2>Sign in with this magic link</h2>
+<p>Click the link below to sign in instantly:</p>
+<p>
+  <a
+    href="{{ .SiteURL }}/auth/verify?token_hash={{ .TokenHash }}&type=email&next={{ .RedirectTo }}"
+    >Sign In</a
+  >
+</p>
+<p>
+  This link will expire soon. If you didn’t request it, you can ignore this
+  email.
+</p>

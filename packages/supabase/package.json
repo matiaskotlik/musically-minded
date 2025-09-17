@@ -1,0 +1,57 @@
+{
+  "name": "@repo/supabase",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    "./database.types": "./gen/database.types.ts",
+    "./*": "./src/*.ts"
+  },
+  "bin": {
+    "bump-filename": "scripts/bump-filename.py",
+    "db-clear": "scripts/db-clear.sh",
+    "db-dump-check": "scripts/db-dump-check.sh",
+    "db-schema-apply": "scripts/db-schema-apply.sh"
+  },
+  "scripts": {
+    "build:check": "tsc --noEmit --emitDeclarationOnly false",
+    "clean": "git clean -xdf .cache .turbo/cache node_modules",
+    "config:push": "supabase config push ${SUPABASE_PROJECT_REF:+--project-ref $SUPABASE_PROJECT_REF}",
+    "db:clear": "scripts/db-clear.sh",
+    "db:diff": "supabase db diff",
+    "db:diff:check": "supabase db diff | tee /dev/stderr | [ $(wc -c) -eq 0 ]",
+    "db:dump": "supabase db dump --local",
+    "db:dump:check": "scripts/db-dump-check.sh",
+    "db:lint": "supabase db lint | tee /dev/stderr | jq -e 'all(all(.issues[]; .level != \"error\"))'",
+    "db:lint:check": "supabase db lint | tee /dev/stderr | jq -e 'all(all(.issues[]; .level != \"error\"))'",
+    "db:reset": "supabase db reset",
+    "db:schema:apply": "scripts/db-schema-apply.sh",
+    "db:start": "supabase db start",
+    "db:stop": "supabase db stop",
+    "db:test": "supabase db test",
+    "dev": "supabase start",
+    "format": "prettier --write --ignore-path ../../.gitignore --cache --cache-location .cache/.prettiercache",
+    "format:check": "prettier --check --ignore-path ../../.gitignore --cache --cache-location .cache/.prettiercache",
+    "lint": "eslint --fix --cache --cache-location .cache/.eslintcache",
+    "lint:check": "eslint --cache --cache-location .cache/.eslintcache",
+    "migrations:push": "supabase db push ${SUPABASE_DB_URL:+--db-url $SUPABASE_DB_URL}",
+    "types:check": "pnpm run --silent types:gen | diff - gen/database.types.ts",
+    "types:gen": "supabase gen types typescript --local --schema public,storage | prettier --stdin-filepath gen/database.types.ts",
+    "types:write": "pnpm run --silent types:gen > gen/database.types.ts"
+  },
+  "prettier": "@repo/prettier-config",
+  "dependencies": {
+    "@supabase-cache-helpers/postgrest-core": "^0.12.3",
+    "@supabase-cache-helpers/postgrest-react-query": "^1.13.6",
+    "@supabase/postgrest-js": "^1.21.3",
+    "@supabase/supabase-js": "^2.56.1",
+    "@tanstack/react-query": "^5.87.4"
+  },
+  "devDependencies": {
+    "@repo/prettier-config": "workspace:*",
+    "@repo/tsconfig": "workspace:*",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "supabase": "^2.39.2",
+    "typescript": "catalog:"
+  }
+}

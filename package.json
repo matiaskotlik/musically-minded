@@ -1,0 +1,31 @@
+{
+  "name": "musically-minded",
+  "private": true,
+  "scripts": {
+    "build:check": "turbo run build:check",
+    "clean": "turbo run clean clean:root",
+    "clean:root": "git clean -xdf node_modules .cache .turbo/cache",
+    "format": "turbo run format format:root --continue -- .",
+    "format:check": "turbo run format:check format:root:check -- .",
+    "format:root": "prettier --write --cache --cache-location .cache/.prettiercache",
+    "format:root:check": "prettier --check --cache --cache-location .cache/.prettiercache",
+    "postinstall": "sherif",
+    "lint": "turbo run lint --continue",
+    "lint:check": "turbo run lint:check"
+  },
+  "prettier": "@repo/prettier-config",
+  "devDependencies": {
+    "@repo/prettier-config": "workspace:*",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.6",
+    "prettier": "catalog:",
+    "sherif": "latest",
+    "turbo": "^2.5.6",
+    "typescript": "catalog:"
+  },
+  "packageManager": "pnpm@10.12.1",
+  "engines": {
+    "node": "^22.16.0",
+    "pnpm": ">=10.11.1"
+  }
+}

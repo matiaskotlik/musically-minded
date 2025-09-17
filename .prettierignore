@@ -1,0 +1,7 @@
+# root-level prettier should ignore packages
+apps/*
+packages/*
+tooling/*
+
+# don't need to reformat this
+pnpm-lock.yaml

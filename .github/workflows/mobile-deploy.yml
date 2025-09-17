@@ -1,0 +1,49 @@
+name: Mobile Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to build for
+        required: true
+        type: choice
+        options:
+          - production
+          - preview
+
+  workflow_call:
+    inputs:
+      environment:
+        description: Environment to build for
+        required: true
+        type: string
+
+concurrency:
+  group: ${{ inputs.environment }}-mobile-deploy
+
+defaults:
+  run:
+    working-directory: 'apps/mobile'
+
+jobs:
+  build:
+    name: Build EAS
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+
+      - uses: expo/expo-github-action@main
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+          packager: pnpm
+
+      - uses: expo/expo-github-action/continuous-deploy-fingerprint@main
+        with:
+          profile: ${{ inputs.environment }}
+          branch: ${{ inputs.environment }}
+          environment: ${{ inputs.environment }}
+          working-directory: apps/mobile

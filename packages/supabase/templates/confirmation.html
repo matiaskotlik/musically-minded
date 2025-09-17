@@ -1,0 +1,9 @@
+<h2>Confirm your email</h2>
+<p>Click the link below to confirm your email address:</p>
+<p>
+  <a
+    href="{{ .SiteURL }}/auth/verify?token_hash={{ .TokenHash }}&type=email&next={{ .RedirectTo }}"
+    >Confirm Email</a
+  >
+</p>
+<p>If you didn’t request this, you can safely ignore this email.</p>

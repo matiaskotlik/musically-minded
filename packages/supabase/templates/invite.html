@@ -1,0 +1,9 @@
+<h2>You're invited!</h2>
+<p>Click below to join:</p>
+<p>
+  <a
+    href="{{ .SiteURL }}/auth/verify?token_hash={{ .TokenHash }}&type=invite&next={{ .RedirectTo }}"
+    >Accept Invitation</a
+  >
+</p>
+<p>If you weren’t expecting this invite, you can ignore this email.</p>

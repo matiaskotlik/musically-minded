@@ -1,0 +1,13 @@
+{
+  "name": "@repo/tsconfig",
+  "version": "0.0.0",
+  "private": true,
+  "files": [
+    "*.json"
+  ],
+  "scripts": {
+    "clean": "git clean -xdf .cache .turbo/cache",
+    "format": "prettier --write --ignore-path ../../.gitignore --cache --cache-location .cache/.prettiercache",
+    "format:check": "prettier --check --ignore-path ../../.gitignore --cache --cache-location .cache/.prettiercache"
+  }
+}

@@ -1,0 +1,30 @@
+name: Mobile
+
+on:
+  push:
+    paths:
+      - 'apps/mobile/**'
+      - '.github/**'
+
+jobs:
+  check:
+    name: Check
+    uses: ./.github/workflows/mobile-check.yml
+
+  production-deploy:
+    name: Production Deploy
+    if: github.ref == 'refs/heads/main'
+    needs: [check]
+    uses: ./.github/workflows/mobile-deploy.yml
+    secrets: inherit
+    with:
+      environment: production
+
+  staging-deploy:
+    name: Staging Deploy
+    if: github.ref == 'refs/heads/staging'
+    needs: [check]
+    uses: ./.github/workflows/mobile-deploy.yml
+    secrets: inherit
+    with:
+      environment: preview
