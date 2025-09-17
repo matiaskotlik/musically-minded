@@ -1,10 +1,13 @@
-import { defineConfig, globalIgnores } from 'eslint/config';
+import { defineConfig } from 'eslint/config';
 import { includeIgnoreFile } from '@eslint/compat';
 import { FlatCompat } from '@eslint/eslintrc';
-import expoConfig from 'eslint-config-expo/flat';
+import path from 'node:path';
 
-module.exports = defineConfig([
+const compat = new FlatCompat({
+  baseDirectory: import.meta.dirname,
+});
+
+export default defineConfig([
   includeIgnoreFile(path.join(import.meta.dirname, '../../.gitignore')),
-  expoConfig
+  ...compat.extends('expo'),
 ]);
-

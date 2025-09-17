@@ -15,4 +15,11 @@ catalogs:
     '@types/react': ~19.1.10
     '@types/react-dom': ^19.1.0
 
+ignoredBuiltDependencies:
+  - unrs-resolver
+  - supabase
+
 nodeLinker: hoisted
+
+onlyBuiltDependencies:
+  - supabase
