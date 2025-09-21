@@ -1,7 +1,9 @@
-import { ExpoConfig, ConfigContext } from 'expo/config';
+import { ConfigContext, ExpoConfig } from 'expo/config';
+
+const APP_VARIANT = process.env.APP_VARIANT!;
 
 function getAppNameSuffix(): string {
-  switch (process.env.APP_VARIANT) {
+  switch (APP_VARIANT) {
     case 'development':
       return ' (Dev)';
     case 'preview':
@@ -12,7 +14,7 @@ function getAppNameSuffix(): string {
 }
 
 function getAppIdentifierSuffix(): string {
-  switch (process.env.APP_VARIANT) {
+  switch (APP_VARIANT) {
     case 'development':
       return '.dev';
     case 'preview':
@@ -22,16 +24,28 @@ function getAppIdentifierSuffix(): string {
   }
 }
 
+function getAppSchemeSuffix(): string {
+  switch (APP_VARIANT) {
+    case 'development':
+      return '-dev';
+    case 'preview':
+      return '-preview';
+    default:
+      return '';
+  }
+}
+
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: 'Musically Minded' + getAppNameSuffix(),
+  name: config.name + getAppNameSuffix(),
+  scheme: config.scheme + getAppSchemeSuffix(),
   slug: config.slug!,
   ios: {
     ...config.ios,
-    bundleIdentifier: 'io.github.musicallyminded' + getAppIdentifierSuffix(),
+    bundleIdentifier: config.ios!.bundleIdentifier + getAppIdentifierSuffix(),
   },
   android: {
     ...config.android,
-    package: 'io.github.musicallyminded' + getAppIdentifierSuffix(),
+    package: config.android!.package + getAppIdentifierSuffix(),
   },
 });
