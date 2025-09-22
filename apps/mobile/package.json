@@ -23,7 +23,7 @@
   "dependencies": {
     "@repo/supabase": "workspace:*",
     "@repo/tsconfig": "workspace:*",
-    "expo": "54.0.8",
+    "expo": "54.0.9",
     "expo-constants": "~18.0.9",
     "expo-dev-client": "~6.0.12",
     "expo-router": "~6.0.7",
