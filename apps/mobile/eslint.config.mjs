@@ -1,13 +1,20 @@
+import baseConfig from '@repo/eslint-config/base';
+import expoConfig from 'eslint-config-expo/flat.js';
 import { defineConfig } from 'eslint/config';
-import { includeIgnoreFile } from '@eslint/compat';
-import { FlatCompat } from '@eslint/eslintrc';
-import path from 'node:path';
-
-const compat = new FlatCompat({
-  baseDirectory: import.meta.dirname,
-});
 
 export default defineConfig([
-  includeIgnoreFile(path.join(import.meta.dirname, '../../.gitignore')),
-  ...compat.extends('expo'),
+  {
+    extends: [expoConfig],
+    rules: {
+      'import/no-named-as-default': 'off',
+      'import/no-named-as-default-member': 'off',
+    },
+  },
+  {
+    extends: [baseConfig],
+    ignores: ['eslint.config.mjs'],
+    rules: {
+      'unicorn/no-array-sort': 'off', // https://github.com/facebook/hermes/pull/1298
+    },
+  },
 ]);
