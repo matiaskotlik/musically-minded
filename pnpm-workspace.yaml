@@ -4,17 +4,17 @@ packages:
   - tooling/*
 
 catalog:
-  eslint: ^9.35.0
+  eslint: ^9.36.0
   prettier: ^3.6.2
   typescript: ~5.9.2
   tailwindcss: 4.1.13
-  '@orpc/server': ^1.8.9
+  '@orpc/server': ^1.9.0
   '@orpc/client': ^1.8.9
 
 catalogs:
   react19:
-    react: 19.1.0
-    react-dom: 19.1.0
+    react: ^19.1.1
+    react-dom: ^19.1.1
     '@types/react': ~19.1.10
     '@types/react-dom': ^19.1.0
 

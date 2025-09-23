@@ -18,6 +18,7 @@ import {
   AuthFormData,
   socialLoginAction,
 } from '@/actions/auth';
+import { unwrapAction } from '@/actions/utils';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
@@ -75,23 +76,19 @@ export function AuthContextProvider({ children }: PropsWithChildren) {
     <AuthContext.Provider
       value={{
         alert,
-        clearAlert: () => {
-          setAlert(null);
-        },
-        setErrorAlert: (message) => {
+        clearAlert: () => setAlert(null),
+        setErrorAlert: (message) =>
           setAlert({
             description: message,
             title: 'Authentication Error',
             variant: 'destructive',
-          });
-        },
-        setMessageAlert: (message) => {
+          }),
+        setMessageAlert: (message) =>
           setAlert({
             description: message,
             title: 'Success!',
             variant: 'default',
-          });
-        },
+          }),
       }}
     >
       {children}
@@ -179,25 +176,14 @@ export function AuthForm({
   );
 
   const { mutateAsync: onSubmit } = useMutation({
-    async mutationFn(formData: AuthFormData) {
-      const { data, error } = await submitAction({
+    mutationFn: async (formData: AuthFormData) =>
+      await submitAction({
         ...formData,
         afterAuthPath,
-      });
-      if (error) {
-        throw error;
-      }
-      return data;
-    },
-    onError(error) {
-      setErrorAlert(error.message);
-    },
-    onMutate() {
-      clearAlert();
-    },
-    onSuccess(data) {
-      setMessageAlert(data.message);
-    },
+      }).then(unwrapAction),
+    onError: (error) => setErrorAlert(error.message),
+    onMutate: () => clearAlert(),
+    onSuccess: (data) => setMessageAlert(data.message),
   });
 
   const {
@@ -304,18 +290,10 @@ export function AuthSocialButton({
   const { clearAlert, setErrorAlert } = useRequiredContext(AuthContext);
 
   const { isPending, mutate: handleClick } = useMutation({
-    async mutationFn() {
-      const { error } = await socialLoginAction({ provider });
-      if (error) {
-        throw error;
-      }
-    },
-    onError(error) {
-      setErrorAlert(error.message);
-    },
-    onMutate() {
-      clearAlert();
-    },
+    mutationFn: async () =>
+      await socialLoginAction({ provider }).then(unwrapAction),
+    onError: (error) => setErrorAlert(error.message),
+    onMutate: () => clearAlert(),
   });
 
   return (

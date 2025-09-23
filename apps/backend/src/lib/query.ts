@@ -34,7 +34,7 @@ export function makeQueryClient() {
     },
     mutationCache: new MutationCache({
       onError(error, _variables, _context, mutation) {
-        console.error('Mutation Error', error);
+        console.log('Mutation Error', error);
 
         if (mutation.meta?.errorToast) {
           toast.error(mutation.meta.errorToast as string, {
@@ -63,7 +63,7 @@ export function makeQueryClient() {
     }),
     queryCache: new QueryCache({
       onError: (error, query) => {
-        console.error('Query Error', error, typeof error);
+        console.log('Query Error', error, typeof error);
 
         if (typeof window !== 'undefined' && query.meta?.errorToast) {
           toast.error(query.meta.errorToast as string);
