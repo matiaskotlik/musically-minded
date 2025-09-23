@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { NextRequest } from 'next/server';
 import { createLoader, parseAsString, parseAsStringLiteral } from 'nuqs/server';
@@ -27,5 +28,6 @@ export async function GET(request: NextRequest) {
     redirect('/auth/login');
   }
 
+  revalidatePath('/', 'layout');
   redirect(next);
 }

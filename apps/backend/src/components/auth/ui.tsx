@@ -18,7 +18,6 @@ import {
   AuthFormData,
   socialLoginAction,
 } from '@/actions/auth';
-import { unwrapAction } from '@/actions/utils';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
@@ -159,8 +158,7 @@ export function AuthForm({
   ) => Promise<SafeReturn<{ message: string }>>;
   submitText: string;
 }) {
-  const { clearAlert, setErrorAlert, setMessageAlert } =
-    useRequiredContext(AuthContext);
+  const { setErrorAlert, setMessageAlert } = useRequiredContext(AuthContext);
 
   const context = useForm<AuthFormData>({
     defaultValues: {
@@ -177,13 +175,14 @@ export function AuthForm({
 
   const { mutateAsync: onSubmit } = useMutation({
     mutationFn: async (formData: AuthFormData) =>
-      await submitAction({
-        ...formData,
-        afterAuthPath,
-      }).then(unwrapAction),
-    onError: (error) => setErrorAlert(error.message),
-    onMutate: () => clearAlert(),
-    onSuccess: (data) => setMessageAlert(data.message),
+      await submitAction({ ...formData, afterAuthPath }),
+    onSuccess: ({ data, error }) => {
+      if (error) {
+        setErrorAlert(error.message);
+      } else {
+        setMessageAlert(data.message);
+      }
+    },
   });
 
   const {
@@ -287,13 +286,17 @@ export function AuthSocialButton({
   name: string;
   provider: Provider;
 }>) {
-  const { clearAlert, setErrorAlert } = useRequiredContext(AuthContext);
+  const { setErrorAlert, setMessageAlert } = useRequiredContext(AuthContext);
 
   const { isPending, mutate: handleClick } = useMutation({
-    mutationFn: async () =>
-      await socialLoginAction({ provider }).then(unwrapAction),
-    onError: (error) => setErrorAlert(error.message),
-    onMutate: () => clearAlert(),
+    mutationFn: async () => await socialLoginAction({ provider }),
+    onSuccess: ({ error }) => {
+      if (error) {
+        setErrorAlert(error.message);
+      } else {
+        setMessageAlert('Redirecting...');
+      }
+    },
   });
 
   return (

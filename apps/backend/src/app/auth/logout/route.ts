@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { NextRequest } from 'next/server';
 import { createLoader, parseAsString } from 'nuqs/server';
@@ -18,5 +19,6 @@ export async function GET(request: NextRequest) {
   }
 
   const { next } = loadSearchParams(request.nextUrl.searchParams);
+  revalidatePath('/', 'layout');
   redirect(next);
 }

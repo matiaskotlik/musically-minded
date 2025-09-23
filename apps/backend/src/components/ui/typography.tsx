@@ -5,17 +5,21 @@ import { twc } from 'react-twc';
 import { Button } from '@/components/ui/button';
 import { useCopyValue } from '@/hooks/use-copy';
 
-export const H1 = twc.h1`lg::text-5xl' text-4xl font-extrabold tracking-tight`;
+export const H1 = twc.h1`text-4xl font-extrabold tracking-tight text-balance lg:text-5xl`;
 
-export const H2 = twc.h2`border-b py-2 text-3xl font-semibold tracking-tight`;
+export const H2 = twc.h2`mt-10 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0`;
 
-export const H3 = twc.h3`text-2xl font-semibold tracking-tight`;
+export const H3 = twc.h3`mt-8 text-2xl font-semibold tracking-tight`;
 
-export const H4 = twc.h4`text-xl font-semibold tracking-tight`;
+export const H4 = twc.h4`mt-6 text-xl font-semibold tracking-tight`;
+
+export const H5 = twc.h5`mt-6 text-lg font-semibold tracking-tight`;
+
+export const H6 = twc.h6`mt-6 text-base font-semibold tracking-tight`;
 
 export const Lead = twc.p`text-muted-foreground text-xl`;
 
-export const P = twc.p`leading-7`;
+export const P = twc.p`leading-7 [&:not(:first-child)]:mt-6`;
 
 export const Large = twc.div`text-lg font-semibold`;
 
@@ -46,6 +50,8 @@ export function MultilineCodeCopy({ value }: { value: null | string }) {
 
 export const List = twc.ul`list-disc`;
 
-export const Quote = twc.blockquote`text-muted-foreground border-l-2 pl-6 italic`;
+export const Quote = twc.blockquote`text-muted-foreground mt-6 border-l-2 pl-6 italic`;
 
-export const Anchor = twc(Link)`text-primary hover:underline`;
+export const Anchor = twc(
+  Link
+)`font-medium text-primary underline underline-offset-4`;

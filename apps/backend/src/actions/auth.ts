@@ -125,6 +125,7 @@ export const socialLoginAction = createAction(
       actionError(error.name, error.message);
     }
 
+    revalidatePath('/', 'layout');
     if (url) {
       redirect(url);
     }
