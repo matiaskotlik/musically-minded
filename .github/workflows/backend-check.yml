@@ -1,0 +1,37 @@
+name: Backend Check
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+defaults:
+  run:
+    working-directory: 'apps/backend'
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: turbo run lint:check
+
+  format:
+    name: Format
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: turbo run format:check -- .
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: turbo run build:check

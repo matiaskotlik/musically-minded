@@ -1,0 +1,331 @@
+'use client';
+import { Provider } from '@supabase/supabase-js';
+import { useMutation } from '@tanstack/react-query';
+import { AlertCircleIcon } from 'lucide-react';
+import { SafeReturn } from 'next-extra';
+import { useQueryState } from 'nuqs';
+import { parseAsString } from 'nuqs/server';
+import React, {
+  ComponentProps,
+  PropsWithChildren,
+  ReactNode,
+  useState,
+} from 'react';
+import { useForm } from 'react-hook-form';
+
+import {
+  AuthActionParams,
+  AuthFormData,
+  socialLoginAction,
+} from '@/actions/auth';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Anchor, Small } from '@/components/ui/typography';
+import {
+  createRequiredContext,
+  useRequiredContext,
+} from '@/hooks/use-required-context';
+import { cn, StyledProps } from '@/lib/utils';
+
+interface AuthAlertType {
+  description: string;
+  title: string;
+  variant: ComponentProps<typeof Alert>['variant'];
+}
+
+interface AuthContextType {
+  alert: AuthAlertType | null;
+  clearAlert: () => void;
+  setErrorAlert: (message: string) => void;
+  setMessageAlert: (message: string) => void;
+}
+
+const AuthContext = createRequiredContext<AuthContextType>();
+
+export function AuthAlert({ className }: StyledProps) {
+  const { alert } = useRequiredContext(AuthContext);
+  if (alert === null) {
+    return null;
+  }
+
+  return (
+    <Alert className={className} variant={alert.variant}>
+      {alert.variant === 'destructive' && <AlertCircleIcon />}
+
+      <AlertTitle>{alert.title}</AlertTitle>
+
+      <AlertDescription>{alert.description}</AlertDescription>
+    </Alert>
+  );
+}
+
+export function AuthContextProvider({ children }: PropsWithChildren) {
+  const [alert, setAlert] = useState<AuthAlertType | null>(null);
+
+  return (
+    <AuthContext.Provider
+      value={{
+        alert,
+        clearAlert: () => {
+          setAlert(null);
+        },
+        setErrorAlert: (message) => {
+          setAlert({
+            description: message,
+            title: 'Authentication Error',
+            variant: 'destructive',
+          });
+        },
+        setMessageAlert: (message) => {
+          setAlert({
+            description: message,
+            title: 'Success!',
+            variant: 'default',
+          });
+        },
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function AuthFooter({
+  forgot,
+  notice = false,
+  signin,
+  signup,
+}: {
+  forgot?: string;
+  notice?: boolean;
+  signin?: string;
+  signup?: string;
+}) {
+  return (
+    <div className='space-y-4'>
+      {notice ? (
+        <Small>
+          By signing in, you are agreeing to our{' '}
+          <Anchor href='https://kiltok.com/legal/terms-of-service'>
+            Terms of Service
+          </Anchor>{' '}
+          and{' '}
+          <Anchor href='https://kiltok.com/legal/privacy-policy'>
+            Privacy Policy
+          </Anchor>
+          .
+        </Small>
+      ) : null}
+
+      {signin ? (
+        <Small>
+          {signin} <Anchor href='/auth/login'>Sign in</Anchor>
+        </Small>
+      ) : null}
+
+      {signup ? (
+        <Small>
+          <Anchor href='/auth/signup'>{signup}</Anchor>
+        </Small>
+      ) : null}
+
+      {forgot ? (
+        <Small>
+          <Anchor href='/auth/forgot-password'>{forgot}</Anchor>
+        </Small>
+      ) : null}
+    </div>
+  );
+}
+
+export function AuthForm({
+  confirmPassword = false,
+  email = false,
+  password = false,
+  submitAction,
+  submitText,
+}: {
+  confirmPassword?: boolean;
+  email?: boolean;
+  password?: boolean;
+  submitAction: (
+    args: AuthActionParams
+  ) => Promise<SafeReturn<{ message: string }>>;
+  submitText: string;
+}) {
+  const { clearAlert, setErrorAlert, setMessageAlert } =
+    useRequiredContext(AuthContext);
+
+  const context = useForm<AuthFormData>({
+    defaultValues: {
+      confirmPassword: '',
+      email: '',
+      password: '',
+    },
+  });
+
+  const [afterAuthPath, _] = useQueryState(
+    'next',
+    parseAsString.withDefault('/')
+  );
+
+  const { mutateAsync: onSubmit } = useMutation({
+    async mutationFn(formData: AuthFormData) {
+      const { data, error } = await submitAction({
+        ...formData,
+        afterAuthPath,
+      });
+      if (error) {
+        throw error;
+      }
+      return data;
+    },
+    onError(error) {
+      setErrorAlert(error.message);
+    },
+    onMutate() {
+      clearAlert();
+    },
+    onSuccess(data) {
+      setMessageAlert(data.message);
+    },
+  });
+
+  const {
+    formState: { isSubmitting },
+    getValues,
+    handleSubmit,
+  } = context;
+
+  return (
+    <Form {...context}>
+      <form
+        className='space-y-4'
+        noValidate
+        onSubmit={handleSubmit((data) => onSubmit(data))}
+      >
+        {email ? (
+          <FormField
+            name='email'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email address</FormLabel>
+
+                <FormControl>
+                  <Input type='email' {...field} />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+            rules={{
+              pattern: {
+                message: 'Please enter a valid email address',
+                value: /^[\w%+.-]+@[\d.A-Za-z-]+\.[A-Za-z]{2,}$/,
+              },
+              required: 'Please enter your email',
+            }}
+          />
+        ) : null}
+
+        {password ? (
+          <FormField
+            name='password'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+
+                <FormControl>
+                  <Input type='password' {...field} />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+            rules={{
+              minLength: {
+                message: 'Password must be at least 8 characters long',
+                value: confirmPassword ? 8 : -1,
+              },
+              required: 'Please enter a password',
+            }}
+          />
+        ) : null}
+
+        {confirmPassword ? (
+          <FormField
+            name='confirmPassword'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm Password</FormLabel>
+
+                <FormControl>
+                  <Input type='password' {...field} />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+            rules={{
+              required: 'Please enter your password again',
+              validate: (value) =>
+                value === getValues().password || 'Passwords do not match',
+            }}
+          />
+        ) : null}
+
+        <Button className='w-full' loading={isSubmitting} type='submit'>
+          {submitText}
+        </Button>
+      </form>
+    </Form>
+  );
+}
+
+export function AuthSocialButton({
+  className,
+  icon,
+  name,
+  provider,
+}: StyledProps<{
+  icon: ReactNode;
+  name: string;
+  provider: Provider;
+}>) {
+  const { clearAlert, setErrorAlert } = useRequiredContext(AuthContext);
+
+  const { isPending, mutate: handleClick } = useMutation({
+    async mutationFn() {
+      const { error } = await socialLoginAction({ provider });
+      if (error) {
+        throw error;
+      }
+    },
+    onError(error) {
+      setErrorAlert(error.message);
+    },
+    onMutate() {
+      clearAlert();
+    },
+  });
+
+  return (
+    <Button
+      className={cn('w-full', className)}
+      loading={isPending}
+      onClick={() => handleClick()}
+      variant='outline'
+    >
+      {icon} {name}
+    </Button>
+  );
+}

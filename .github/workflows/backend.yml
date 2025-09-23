@@ -1,0 +1,30 @@
+name: Backend
+
+on:
+  push:
+    paths:
+      - 'apps/backend/**'
+      - '.github/**'
+
+jobs:
+  check:
+    name: Check
+    uses: backend-check.yml
+
+  deploy-production:
+    name: Production Deploy
+    if: github.ref == 'refs/heads/main'
+    needs: check
+    uses: backend-deploy.yml
+    secrets: inherit
+    with:
+      environment: production
+
+  deploy-staging:
+    name: Staging Deploy
+    if: github.ref == 'refs/heads/staging'
+    needs: check
+    uses: backend-deploy.yml
+    secrets: inherit
+    with:
+      environment: preview

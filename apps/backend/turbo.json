@@ -1,0 +1,18 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "outputs": [".next/**", "!.next/cache/**", "next-env.d.ts"],
+      "env": ["SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET"]
+    },
+    "build:vercel": {
+      "dependsOn": ["^build"],
+      "outputs": [".vercel/output", "next-env.d.ts"],
+      "env": ["SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET"]
+    },
+    "dev": {
+      "persistent": true
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "name": "@repo/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./utils": "./src/utils.ts"
+  },
+  "scripts": {
+    "build:check": "tsc --noEmit --emitDeclarationOnly false",
+    "clean": "git clean -xdf .cache .turbo/cache node_modules",
+    "format": "prettier --write --ignore-path ../../.gitignore --cache --cache-location .cache/.prettiercache",
+    "format:check": "prettier --check --ignore-path ../../.gitignore --cache --cache-location .cache/.prettiercache",
+    "lint": "eslint --fix --cache --cache-location .cache/.eslintcache",
+    "lint:check": "eslint --cache --cache-location .cache/.eslintcache"
+  },
+  "prettier": "@repo/prettier-config",
+  "dependencies": {
+    "@orpc/server": "catalog:",
+    "@repo/supabase": "workspace:*",
+    "@supabase/storage-js": "^2.12.1",
+    "@supabase/supabase-js": "^2.57.4",
+    "zod": "^4.1.11"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/prettier-config": "workspace:*",
+    "@repo/tsconfig": "workspace:*",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "typescript": "catalog:"
+  },
+  "engines": {
+    "node": "^22.16.0"
+  }
+}

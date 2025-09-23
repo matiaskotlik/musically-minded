@@ -7,6 +7,9 @@ catalog:
   eslint: ^9.35.0
   prettier: ^3.6.2
   typescript: ~5.9.2
+  tailwindcss: 4.1.13
+  '@orpc/server': ^1.8.9
+  '@orpc/client': ^1.8.9
 
 catalogs:
   react19:
@@ -22,5 +25,7 @@ ignoredBuiltDependencies:
 nodeLinker: hoisted
 
 onlyBuiltDependencies:
+  - '@tailwindcss/oxide'
   - core-js-pure
+  - sharp
   - supabase

@@ -41,6 +41,7 @@ export default defineConfig([
       'canonical/export-specifier-newline': 'off',
       'canonical/id-match': 'off',
       'canonical/import-specifier-newline': 'off',
+      'import/no-anonymous-default-export': 'off',
       'n/no-missing-import': 'off',
       'n/no-unpublished-import': 'off',
       // Must disable the base rule for @typescript-eslint/no-unused-vars to work properly
